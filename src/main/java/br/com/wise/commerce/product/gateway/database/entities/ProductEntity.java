@@ -28,14 +28,12 @@ public class ProductEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private String description;
 
     @Column(nullable = false, unique = true)
     private String sku;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     @JdbcType(PostgreSQLEnumJdbcType.class)
     private Category category;
 

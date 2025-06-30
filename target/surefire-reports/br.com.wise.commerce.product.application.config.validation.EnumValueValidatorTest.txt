@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: br.com.wise.commerce.product.application.config.validation.EnumValueValidatorTest
--------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.410 s -- in br.com.wise.commerce.product.application.config.validation.EnumValueValidatorTest

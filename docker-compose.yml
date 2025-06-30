@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db_product
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: wiseCommerceProduct
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3.11-alpine
+    container_name: rabbitmq_product
+    environment:
+      RABBITMQ_DEFAULT_USER: wise
+      RABBITMQ_DEFAULT_PASS: admin
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+
+  app:
+    build: .
+    container_name: product_service
+    depends_on:
+      - db
+      - rabbitmq
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/wiseCommerceProduct
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: wise
+      SPRING_RABBITMQ_PASSWORD: admin
+    ports:
+      - "8080:8080"
+
+volumes:
+  pg_data:

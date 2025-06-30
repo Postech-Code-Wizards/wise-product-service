@@ -1,6 +1,6 @@
 package br.com.wise.commerce.product.application.dtos.request;
 
-import br.com.wise.commerce.product.application.config.validation.EnumValue;
+import br.com.wise.commerce.product.application.configuration.validation.EnumValue;
 import br.com.wise.commerce.product.domain.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
