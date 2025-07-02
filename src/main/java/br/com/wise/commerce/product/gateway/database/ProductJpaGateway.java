@@ -36,10 +36,20 @@ public class ProductJpaGateway implements ProductGateway {
         return productConverter.toDomain(productEntity);
     }
 
+    public Product findProductBySku(String sku) {
+            ProductEntity productEntity = productRepository.findBySku(sku).orElseThrow(()
+                -> new ProductNotFoundException(PRODUCT_NOT_FOUND + sku));
+        return productConverter.toDomain(productEntity);
+    }
+
     public List<Product> findProductsListByNameAndPagination(String productName, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ProductEntity> productEntityPage = productRepository.findByNameContainingIgnoreCase(productName, pageable);
         return productEntityPage.getContent().stream().map(productConverter::toDomain).toList();
+    }
+
+    public List<Product> findAllProducts(){
+        return productRepository.findAll().stream().map(productConverter::toDomain).toList();
     }
 
     public void updateProductName(String sku, String name) {

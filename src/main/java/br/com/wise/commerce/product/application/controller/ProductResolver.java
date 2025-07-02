@@ -24,7 +24,9 @@ public class ProductResolver {
 
     private final CreateProductUseCase createProductUseCase;
     private final FindProductByIdUseCase findProductByIdUseCase;
+    private final FindProductBySkuUseCase findProductBySkuUseCase;
     private final FindProductsListByNameAndPaginationUseCase findProductsListByNameAndPaginationUseCase;
+    private final FindAllProductsUseCase findAllProductsUseCase;
     private final UpdateProductNameUseCase updateProductNameUseCase;
     private final UpdateProductDescriptionUseCase updateProductDescriptionUseCase;
     private final UpdateProductPriceUseCase updateProductPriceUseCase;
@@ -38,13 +40,19 @@ public class ProductResolver {
     }
 
     @QueryMapping
-    public ProductResponse getProductById(@Argument("input") Long id) {
+    public ProductResponse getProductById(@Argument("id") Long id) {
         var domain = findProductByIdUseCase.execute(id);
         return productConverter.toResponse(domain);
     }
 
     @QueryMapping
-    public List<ProductResponse> getProductsList(@Argument("name") String name,
+    public ProductResponse findProductBySku(@Argument("sku") String sku) {
+        var domain = findProductBySkuUseCase.execute(sku);
+        return productConverter.toResponse(domain);
+    }
+
+    @QueryMapping
+    public List<ProductResponse> findProductsListByNameAndPagination(@Argument("name") String name,
                                                  @Argument("page") Optional<Integer> page,
                                                  @Argument("size") Optional<Integer> size
     ) {
@@ -52,6 +60,12 @@ public class ProductResolver {
         int defaultSize = size.orElse(10);
 
         List<Product> domain = findProductsListByNameAndPaginationUseCase.execute(name, defaultPage, defaultSize);
+        return domain.stream().map(productConverter::toResponse).toList();
+    }
+
+    @QueryMapping
+    public List<ProductResponse> findAllProducts() {
+        List<Product> domain = findAllProductsUseCase.execute();
         return domain.stream().map(productConverter::toResponse).toList();
     }
 

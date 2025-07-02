@@ -11,7 +11,11 @@ public interface ProductGateway {
 
     Product findProductById(Long id);
 
+    Product findProductBySku(String sku);
+
     List<Product> findProductsListByNameAndPagination(String productName, int page, int size);
+
+    List<Product> findAllProducts();
 
     void updateProductName(String sku, String name);
 

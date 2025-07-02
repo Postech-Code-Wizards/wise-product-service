@@ -26,7 +26,11 @@ class ProductResolverTest {
     @Mock
     private FindProductByIdUseCase findProductByIdUseCase;
     @Mock
+    private FindProductBySkuUseCase findProductBySkuUseCase;
+    @Mock
     private FindProductsListByNameAndPaginationUseCase findProductsListByNameAndPaginationUseCase;
+    @Mock
+    private FindAllProductsUseCase findAllProductsUseCase;
     @Mock
     private UpdateProductNameUseCase updateProductNameUseCase;
     @Mock
@@ -67,6 +71,20 @@ class ProductResolverTest {
     }
 
     @Test
+    void shouldReturnProductBySku(){
+        String sku = "ARR123qwer2025";
+        Product domain = mock(Product.class);
+        ProductResponse response = mock(ProductResponse.class);
+
+        when(findProductBySkuUseCase.execute(sku)).thenReturn(domain);
+        when(productConverter.toResponse(domain)).thenReturn(response);
+
+        ProductResponse result = productResolver.findProductBySku(sku);
+
+        assertThat(result).isEqualTo(response);
+    }
+
+    @Test
     void shouldReturnPaginatedProductList() {
         String name = "Arroz";
         List<Product> domainList = List.of(mock(Product.class));
@@ -75,7 +93,21 @@ class ProductResolverTest {
         when(findProductsListByNameAndPaginationUseCase.execute(name, 0, 10)).thenReturn(domainList);
         when(productConverter.toResponse(any())).thenReturn(responseList.get(0));
 
-        List<ProductResponse> result = productResolver.getProductsList(name, Optional.empty(), Optional.empty());
+        List<ProductResponse> result = productResolver.findProductsListByNameAndPagination(name, Optional.empty(), Optional.empty());
+
+        assertThat(result).hasSize(1);
+        verify(productConverter).toResponse(domainList.get(0));
+    }
+
+    @Test
+    void shouldReturnProductList() {
+        List<Product> domainList = List.of(mock(Product.class));
+        List<ProductResponse> responseList = List.of(mock(ProductResponse.class));
+
+        when(findAllProductsUseCase.execute()).thenReturn(domainList);
+        when(productConverter.toResponse(any())).thenReturn(responseList.get(0));
+
+        List<ProductResponse> result = productResolver.findAllProducts();
 
         assertThat(result).hasSize(1);
         verify(productConverter).toResponse(domainList.get(0));

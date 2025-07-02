@@ -92,6 +92,42 @@ class ProductJpaGatewayTest {
     }
 
     @Test
+    void shouldFindProductBySku() {
+        ZonedDateTime createdAt = ZonedDateTime.of(2025, 6, 15, 14, 0, 0, 0, ZoneId.of("America/Sao_Paulo"));
+        ZonedDateTime updatedAt = ZonedDateTime.of(2025, 6, 15, 15, 30, 0, 0, ZoneId.of("America/Sao_Paulo"));
+
+        ProductEntity entity = new ProductEntity();
+        Product domain = new Product(
+                1L,
+                "Arroz",
+                "Arroz Branco",
+                "ARR123qwer2025",
+                Category.ALIMENTOS,
+                15.0,
+                true,
+                1000,
+                createdAt,
+                updatedAt
+        );
+
+        when(productRepository.findBySku("ARR123qwer2025")).thenReturn(Optional.of(entity));
+        when(productConverter.toDomain(entity)).thenReturn(domain);
+
+        Product result = productJpaGateway.findProductBySku("ARR123qwer2025");
+
+        assertThat(result).isEqualTo(domain);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenProductNotFoundBySku() {
+        when(productRepository.findBySku("ARR123qwer2025")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> productJpaGateway.findProductBySku("ARR123qwer2025"))
+                .isInstanceOf(ProductNotFoundException.class)
+                .hasMessageContaining("Product not found for sku ARR123qwer2025");
+    }
+
+    @Test
     void shouldFindProductsListByNameAndPagination() {
         ZonedDateTime createdAt = ZonedDateTime.of(2025, 6, 15, 14, 0, 0, 0, ZoneId.of("America/Sao_Paulo"));
         ZonedDateTime updatedAt = ZonedDateTime.of(2025, 6, 15, 15, 30, 0, 0, ZoneId.of("America/Sao_Paulo"));
@@ -117,6 +153,35 @@ class ProductJpaGatewayTest {
         when(productConverter.toDomain(entity)).thenReturn(domain);
 
         List<Product> result = productJpaGateway.findProductsListByNameAndPagination("prod", 0, 10);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0)).isEqualTo(domain);
+    }
+
+    @Test
+    void shouldFindProductsList() {
+        ZonedDateTime createdAt = ZonedDateTime.of(2025, 6, 15, 14, 0, 0, 0, ZoneId.of("America/Sao_Paulo"));
+        ZonedDateTime updatedAt = ZonedDateTime.of(2025, 6, 15, 15, 30, 0, 0, ZoneId.of("America/Sao_Paulo"));
+
+        ProductEntity entity = new ProductEntity();
+        Product domain = new Product(
+                1L,
+                "Arroz",
+                "Arroz Branco",
+                "ARR123qwer2025",
+                Category.ALIMENTOS,
+                15.0,
+                true,
+                1000,
+                createdAt,
+                updatedAt
+        );
+        List<ProductEntity> entities = List.of(entity);
+
+        when(productRepository.findAll()).thenReturn(entities);
+        when(productConverter.toDomain(entity)).thenReturn(domain);
+
+        List<Product> result = productJpaGateway.findAllProducts();
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0)).isEqualTo(domain);

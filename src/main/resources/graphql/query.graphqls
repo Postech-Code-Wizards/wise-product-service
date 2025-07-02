@@ -1,10 +1,12 @@
 type Query {
     getProduct(id: ID!): ProductResponse
-    getListOfProducts(input: ProductSearchInput): [ProductResponse]
+    findProductBySku(sku: String!): ProductResponse
+    findProductsListByNameAndPagination(input: ProductSearchInput): [ProductResponse]
+    findAllProducts: [ProductResponse]
 }
 
 type Mutation {
-    createProduct(name: String, page: Int, size: Int): Boolean
+    createProduct(input: ProductInput): Boolean
     updateProductName(sku: String!, name: String!): Boolean
     updateProductDescription(sku: String!, description: String!): Boolean
     updateProductPrice(sku: String!, price: Float!): Boolean

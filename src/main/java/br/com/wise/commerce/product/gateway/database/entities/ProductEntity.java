@@ -21,7 +21,7 @@ import java.time.ZonedDateTime;
 @Table(name = "product", indexes = {@Index(name = "idx_sku", columnList = "sku")})
 public class ProductEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
